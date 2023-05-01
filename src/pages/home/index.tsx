@@ -1,43 +1,52 @@
-import React, { useState, useEffect, SyntheticEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
-import { TRecipe } from '../../api/actionDto'
+import { TRecipe, TFilterOption } from '../../api/types'
 import { fetchRecipiesList } from '../../api/actions'
-import { PageLayout } from '../../components/Templates/pageLayout'
-import { SearchBar } from '../../components/Molecules/SearchBar'
-import { FilterSelect } from '../../components/Molecules/FilterSelect'
-import { Card, CardActions } from '../../components/Atoms/Card'
-import { CardActionArea, CardContent, CardMedia, CardHeader} from '../../components/Atoms/Card'
-import { Stack, Typography } from '@mui/material'
+import { PageLayout } from '@/src/components/Templates/pageLayout'
+import { SearchBar } from '@/src/components/Molecules/SearchBar'
+import { FilterSelect } from '@/src/components/Molecules/FilterSelect'
+import { Card, CardActions } from '@/src/components/Atoms/Card'
+import { 
+    CardActionArea, 
+    CardContent, 
+    CardHeader
+} from '@/src/components/Atoms/Card'
+import { Stack, Paper } from '@mui/material'
+import { useQuery } from 'react-query';
+import Loader from '@/src/components/Atoms/Loader';
 
-type IndexProps = {
-  recipes: TRecipe[] 
-}
-function Home({ recipes }: IndexProps) {
+function Home() {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredObjects, setFilteredObjects] = useState<TRecipe[]>([])
-  const filterOptions = [
+
+  const { isLoading, data: recipes  } = useQuery("recipes", fetchRecipiesList)
+
+  const filterOptions: TFilterOption[] = [
     {
         name: 'All categories',
         value: ''
     },
-    ...recipes.map((recipe) => ({ name: recipe.name, value: recipe.name }))
+    ...(recipes ? recipes.map((recipe) => ({ name: recipe.name, value: recipe.name })): [])
   ]
-
-
   useEffect(() => {
-    const filteredObjects: any = recipes.filter(recipe =>
+    const filteredObjects: any = recipes? recipes.filter(recipe =>
         recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (filter === '' || recipe.name === filter)
-    );
-        setFilteredObjects(filteredObjects)
+    ): [];
+    
+    setFilteredObjects(filteredObjects)
       
   }, [searchTerm, filter, recipes])
 
   return (
     <PageLayout>
-        <Stack flexDirection="row" mt="10px">
+        <Paper sx={{margin: 5, padding: '24px'}}>
+        {
+            !isLoading && (
+                <>
+                    <Stack flexDirection="row" mt="10px">
             <SearchBar 
                 placeholder="Search objects..."
                 value={searchTerm}
@@ -57,7 +66,6 @@ function Home({ recipes }: IndexProps) {
         <Stack flexDirection="row" flexWrap="wrap" gap="10px" mt="10px">
         {filteredObjects.map((recipe, index) => (
             <Card key={index}>
-               
                 <CardHeader> {recipe.name} </CardHeader>
                 <CardContent> {recipe.name} </CardContent>
                 <CardActionArea>
@@ -68,19 +76,14 @@ function Home({ recipes }: IndexProps) {
             </Card>
         ))}
         </Stack>
+                </>
+            )
+        }
+        { isLoading && <Loader/> }
+        
+        </Paper>
     </PageLayout>
   )
 }
 
-export async function getStaticProps() {
-
-  const recipes = await fetchRecipiesList()
-
-  return {
-    props: {
-        recipes
-    }
-  }
-}
-
-export default Home
+export default Home;

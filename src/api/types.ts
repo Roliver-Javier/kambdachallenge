@@ -20,6 +20,13 @@ export type TRecipe = {
     instructions: TInstruction[];
 }
 
+export type TFilterOption = {
+    name: string;
+    value: string;
+}
+
+
+
 export type TNutrition = {
     calories: number;
     carbohydrates: number;

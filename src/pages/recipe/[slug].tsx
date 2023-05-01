@@ -1,21 +1,24 @@
-import { TRecipe } from '@/src/api/actionDto';
-import { fetchRecipieDetail, fetchRecipiesList } from '@/src/api/actions'
+import { fetchRecipeDetail, fetchRecipiesList } from '@/src/api/actions'
 import { PageLayout } from '@/src/components/Templates/pageLayout';
 import { Paper, Typography, Stack } from '@mui/material';
+import { useQuery } from 'react-query'
 import Link from 'next/link'
+import Loader from '@/src/components/Atoms/Loader';
 
 type TRecipeProps = {
-  recipe: TRecipe,
+  recipeId: string,
 }
-function Recipe({recipe}: TRecipeProps) {
-
+function Recipe({recipeId}: TRecipeProps) {
+  const { isLoading, data: recipe  } = useQuery(["recipe",recipeId], () => fetchRecipeDetail(recipeId))
   return (
     <PageLayout backLink={{
       href:"/",
       as:"/",
       text: 'Go Back to Recipes'
     }}>
-      <Paper sx={{padding: '10px 24px'}}>
+      <Paper sx={{margin: 5, padding: '24px'}}>
+        { !isLoading && recipe && (
+          <>
             <Stack flexDirection="row">
               <Typography variant="h5" sx={{width: "90%"}}>{recipe.name}</Typography>
             </Stack>
@@ -35,7 +38,10 @@ function Recipe({recipe}: TRecipeProps) {
                 ))}
               </ol>
             </Stack>
+          </>
+        )}
 
+      { isLoading && <Loader/> }
             
       </Paper>
     </PageLayout>
@@ -43,12 +49,9 @@ function Recipe({recipe}: TRecipeProps) {
 }
 
 export async function getStaticProps({ params}: any) {
-
-const recipe = await fetchRecipieDetail(params.slug)
-
   return {
     props: {
-      recipe,
+      recipeId: params.slug,
     }
   }
 }

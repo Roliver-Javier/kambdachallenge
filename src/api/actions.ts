@@ -1,5 +1,5 @@
 
-import { GetRecepiesResponse, GetTipsResponse, TRecipe, TTips } from "./actionDto";
+import { GetRecepiesResponse, GetTipsResponse, TRecipe, TTips } from "./types";
 import axios from 'axios';
 
 
@@ -24,7 +24,7 @@ export const fetchRecipiesList = async (): Promise<TRecipe[]> => {
         return [];
       }
 }
-export const fetchRecipieDetail = async (id: string): Promise<TRecipe[]> => {
+export const fetchRecipeDetail = async (id: string): Promise<TRecipe | null> => {
   try {
       const response = await axios.get(
           `${API_URL}/recipes/get-more-info`, { headers, params: { id } }
@@ -32,11 +32,11 @@ export const fetchRecipieDetail = async (id: string): Promise<TRecipe[]> => {
       return response.data;
     } catch (error) {
       console.error(error);
-      return [];
+      return null;
     }
 }
 
-export const fetchTips = async (id: string): Promise<TTips[] | null> => {
+export const fetchTips = async (id: string): Promise<TTips[]> => {
   try {
       const response = await axios.get<GetTipsResponse>(
           `${API_URL}/tips/list`, { headers, params: { id, from: '0', size: '5' } }
@@ -44,6 +44,6 @@ export const fetchTips = async (id: string): Promise<TTips[] | null> => {
       return response.data.results;
     } catch (error) {
       console.error(error);
-      return null;
+      return [];
     }
 }
