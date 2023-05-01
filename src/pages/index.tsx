@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
-import { TRecipe, TFilterOption } from '../../api/types'
-import { fetchRecipiesList } from '../../api/actions'
+import { TRecipe, TFilterOption } from '../api/types'
+import { fetchRecipiesList } from '../api/actions'
 import { PageLayout } from '@/src/components/Templates/pageLayout'
 import { SearchBar } from '@/src/components/Molecules/SearchBar'
 import { FilterSelect } from '@/src/components/Molecules/FilterSelect'
-import { Card, CardActions } from '@/src/components/Atoms/Card'
 import { 
+    Card, CardActions,
     CardActionArea, 
     CardContent, 
     CardHeader

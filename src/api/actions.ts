@@ -5,13 +5,13 @@ import axios from 'axios';
 
 
 const headers = {
-  'X-RapidAPI-Key': '8614af7b39mshc8d1d2165688e1dp1408cdjsndbe44aae29b7',
+  'X-RapidAPI-Key': `${process.env.NEXT_PUBLIC_RAPID_API_KEY}`,
   'X-RapidAPI-Host': 'tasty.p.rapidapi.com'
   }
 
 
 
-const API_URL = 'https://tasty.p.rapidapi.com';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
 
 export const fetchRecipiesList = async (): Promise<TRecipe[]> => {
     try {
