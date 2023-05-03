@@ -16,7 +16,7 @@ const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`
 export const fetchRecipiesList = async (): Promise<TRecipe[]> => {
     try {
         const response = await axios.get<GetRecepiesResponse>(
-            `${API_URL}/recipes/list`, { headers, params: { from: '0', size: '5' } }
+            `${API_URL}/recipes/list`, { headers, params: { from: '0', size: '25' } }
             )
         return response.data.results;
       } catch (error) {
